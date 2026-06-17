@@ -189,18 +189,28 @@ curl -X POST http://localhost:8080/api/leads \
 - Use managed PostgreSQL with backups.
 - Store environment variables in the host or deployment platform secret manager.
 
-## Railway Backend Deploy
+## Railway Deploy
 
-This repository is a monorepo, so Railway needs to know that the deploy target is the Spring Boot backend. The root `nixpacks.toml` builds:
+This repository is a monorepo. Create two Railway services from the same GitHub repo and set each service's root directory.
+
+### Backend Service
+
+Set the Railway backend service root directory to:
+
+```text
+backend
+```
+
+The backend `nixpacks.toml` builds:
 
 ```bash
-cd backend && mvn -DskipTests clean package
+mvn -DskipTests clean package
 ```
 
 and starts:
 
 ```bash
-java -jar backend/target/scalora-api-1.0.0.jar
+java -jar target/scalora-api-1.0.0.jar
 ```
 
 Set these Railway variables on the backend service:
@@ -216,4 +226,34 @@ JWT_EXPIRATION_MINUTES=1440
 CORS_ALLOWED_ORIGINS=<your-frontend-domain>
 ADMIN_EMAIL=admin@scalora.com
 ADMIN_PASSWORD=<strong-admin-password>
+```
+
+### Frontend Service
+
+Set the Railway frontend service root directory to:
+
+```text
+frontend
+```
+
+The frontend `nixpacks.toml` builds:
+
+```bash
+npm install
+npm run build
+```
+
+and starts:
+
+```bash
+npm run preview -- --host 0.0.0.0 --port $PORT
+```
+
+Set these Railway variables on the frontend service:
+
+```bash
+VITE_API_BASE_URL=https://<your-backend-domain>.up.railway.app/api
+VITE_WHATSAPP_NUMBER=96100000000
+VITE_INSTAGRAM_URL=https://instagram.com/scalora
+VITE_LINKEDIN_URL=https://linkedin.com/company/scalora
 ```
