@@ -325,7 +325,6 @@ function Contact() {
           <div className="mt-8 flex gap-3">
             <a className="rounded-lg bg-[#25D366] px-5 py-3 font-bold text-white" href={`https://wa.me/${import.meta.env.VITE_WHATSAPP_NUMBER || '96100000000'}`}>WhatsApp</a>
             <a className="rounded-lg border border-slate-300 px-5 py-3 font-bold text-ink" href={import.meta.env.VITE_INSTAGRAM_URL || '#'}>Instagram</a>
-            <a className="rounded-lg border border-slate-300 px-5 py-3 font-bold text-ink" href={import.meta.env.VITE_LINKEDIN_URL || '#'}>LinkedIn</a>
           </div>
         </div>
         <form onSubmit={submit} className="grid gap-4 rounded-lg border border-slate-200 bg-slate-50 p-5 sm:p-8">
