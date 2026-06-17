@@ -445,6 +445,19 @@ function CollectionManager({ tab, data, draft, setDraft, save, remove }) {
     projects: ['title', 'category', 'summary', 'imageUrl', 'featured'],
     testimonials: ['clientName', 'company', 'quote', 'displayOrder']
   }[tab];
+
+  function uploadProjectImage(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      window.alert('Please upload an image file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setDraft({ ...draft, imageUrl: reader.result });
+    reader.readAsDataURL(file);
+  }
+
   return (
     <div className="mt-6 grid gap-6 lg:grid-cols-[360px_1fr]">
       <div className="rounded-lg border border-slate-200 bg-white p-5">
@@ -453,6 +466,21 @@ function CollectionManager({ tab, data, draft, setDraft, save, remove }) {
           {fields.map((field) => (
             field === 'featured' ? (
               <label key={field} className="flex items-center gap-2 font-semibold"><input type="checkbox" checked={!!draft[field]} onChange={(e) => setDraft({ ...draft, [field]: e.target.checked })} /> Featured</label>
+            ) : field === 'imageUrl' && tab === 'projects' ? (
+              <div key={field} className="grid gap-3">
+                {draft.imageUrl && (
+                  <img className="h-36 w-full rounded-lg border border-slate-200 object-cover" src={draft.imageUrl} alt="Project preview" />
+                )}
+                <label className="focus-ring cursor-pointer rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center font-bold text-ink hover:border-teal hover:bg-mist">
+                  Upload project image
+                  <input className="sr-only" type="file" accept="image/*" onChange={(e) => uploadProjectImage(e.target.files?.[0])} />
+                </label>
+                {draft.imageUrl && (
+                  <button type="button" onClick={() => setDraft({ ...draft, imageUrl: '' })} className="rounded-lg border border-slate-300 px-4 py-2 font-bold text-ink">
+                    Remove image
+                  </button>
+                )}
+              </div>
             ) : (
               <input key={field} className="rounded-lg border border-slate-300 px-4 py-3" placeholder={field} value={draft[field] || ''} onChange={(e) => setDraft({ ...draft, [field]: e.target.value })} />
             )
