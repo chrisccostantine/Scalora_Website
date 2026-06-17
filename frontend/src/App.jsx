@@ -243,22 +243,40 @@ function WhyChoose() {
 
 function Projects({ projects }) {
   const fallbackImage = 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80';
+  const [showAllMobileProjects, setShowAllMobileProjects] = useState(false);
+  const mobileProjects = showAllMobileProjects ? projects : projects.slice(0, 3);
+  const projectCard = (project) => (
+    <article key={project.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+      <img className="h-56 w-full object-cover" src={project.imageUrl || fallbackImage} alt={project.title} />
+      <div className="p-6">
+        <span className="rounded-lg bg-mist px-3 py-1 text-xs font-black uppercase tracking-wide text-ink">{project.category}</span>
+        <h3 className="mt-4 text-2xl font-black text-ink">{project.title}</h3>
+        <p className="mt-3 leading-7 text-slate-600">{project.summary}</p>
+      </div>
+    </article>
+  );
+
   return (
     <section id="projects" className="bg-white py-20">
       <div className="section">
         <p className="font-bold uppercase tracking-[0.18em] text-coral">Portfolio</p>
         <h2 className="mt-4 max-w-3xl text-4xl font-black text-ink sm:text-5xl">Project formats Scalora can deliver for real business and academic needs.</h2>
-        <div className="mt-10 grid gap-6 lg:grid-cols-3">
-          {projects.map((project) => (
-            <article key={project.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-              <img className="h-56 w-full object-cover" src={project.imageUrl || fallbackImage} alt={project.title} />
-              <div className="p-6">
-                <span className="rounded-lg bg-mist px-3 py-1 text-xs font-black uppercase tracking-wide text-ink">{project.category}</span>
-                <h3 className="mt-4 text-2xl font-black text-ink">{project.title}</h3>
-                <p className="mt-3 leading-7 text-slate-600">{project.summary}</p>
+        <div className="mt-10 md:hidden">
+          <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4">
+            {mobileProjects.map((project) => (
+              <div key={project.id} className="min-w-[84%] snap-start">
+                {projectCard(project)}
               </div>
-            </article>
-          ))}
+            ))}
+          </div>
+          {projects.length > 3 && !showAllMobileProjects && (
+            <button onClick={() => setShowAllMobileProjects(true)} className="mt-2 w-full rounded-lg bg-ink px-5 py-3 font-black text-white">
+              View all projects
+            </button>
+          )}
+        </div>
+        <div className="mt-10 hidden gap-6 md:grid lg:grid-cols-3">
+          {projects.map(projectCard)}
         </div>
       </div>
     </section>
