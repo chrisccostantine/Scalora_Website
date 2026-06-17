@@ -8,6 +8,6 @@ export default defineConfig({
   },
   preview: {
     host: '0.0.0.0',
-    allowedHosts: ['.up.railway.app']
+    allowedHosts: ['.up.railway.app', 'www.scalora-agency.com', 'scalora-agency.com']
   }
 });
