@@ -13,6 +13,7 @@ export default [
         window: 'readonly',
         document: 'readonly',
         FileReader: 'readonly',
+        Image: 'readonly',
         localStorage: 'readonly',
         location: 'readonly',
         fetch: 'readonly',

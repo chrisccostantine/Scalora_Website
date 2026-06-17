@@ -13,7 +13,7 @@ public class Project extends BaseEntity {
   private String category;
   @Column(nullable = false, length = 2000)
   private String summary;
-  @Column(columnDefinition = "TEXT")
+  @Column(name = "image_data", columnDefinition = "TEXT")
   private String imageUrl;
   private boolean featured;
   private boolean active = true;

@@ -28,6 +28,28 @@ const navItems = [
   ['Contact', '#contact']
 ];
 
+function imageFileToDataUrl(file, maxSize = 1400, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Could not read image file.'));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error('Could not process image file.'));
+      image.onload = () => {
+        const scale = Math.min(1, maxSize / Math.max(image.width, image.height));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.max(1, Math.round(image.width * scale));
+        canvas.height = Math.max(1, Math.round(image.height * scale));
+        const context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
 function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
   const [open, setOpen] = useState(false);
   const logo = brandSettings.logoUrl;
@@ -63,8 +85,8 @@ function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
         </button>
       </div>
       {open && (
-        <div className="fixed inset-0 z-50 bg-white p-5 md:hidden">
-          <div className="flex items-center justify-between">
+        <div className="fixed inset-0 z-[100] min-h-dvh bg-white p-5 text-ink shadow-glow md:hidden">
+          <div className="flex items-center justify-between border-b border-slate-200 pb-4">
             <span className="flex items-center gap-3 text-xl font-bold">
               {logo ? <img className="h-10 w-10 rounded-lg object-contain" src={logo} alt={`${agencyName} logo`} /> : null}
               {agencyName}
@@ -220,6 +242,7 @@ function WhyChoose() {
 }
 
 function Projects({ projects }) {
+  const fallbackImage = 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80';
   return (
     <section id="projects" className="bg-white py-20">
       <div className="section">
@@ -228,7 +251,7 @@ function Projects({ projects }) {
         <div className="mt-10 grid gap-6 lg:grid-cols-3">
           {projects.map((project) => (
             <article key={project.id} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-              <img className="h-56 w-full object-cover" src={project.imageUrl} alt={project.title} />
+              <img className="h-56 w-full object-cover" src={project.imageUrl || fallbackImage} alt={project.title} />
               <div className="p-6">
                 <span className="rounded-lg bg-mist px-3 py-1 text-xs font-black uppercase tracking-wide text-ink">{project.category}</span>
                 <h3 className="mt-4 text-2xl font-black text-ink">{project.title}</h3>
@@ -494,16 +517,19 @@ function CollectionManager({ tab, data, draft, setDraft, saving, save, remove })
     testimonials: ['clientName', 'company', 'quote', 'displayOrder']
   }[tab];
 
-  function uploadProjectImage(file) {
+  async function uploadProjectImage(file) {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       window.alert('Please upload an image file.');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => setDraft({ ...draft, imageUrl: reader.result });
-    reader.readAsDataURL(file);
+    try {
+      const imageUrl = await imageFileToDataUrl(file);
+      setDraft({ ...draft, imageUrl });
+    } catch (err) {
+      window.alert(err.message);
+    }
   }
 
   return (
@@ -561,16 +587,19 @@ function BrandManager({ settings, saving, save }) {
     setDraft(settings || fallbackContent.brandSettings);
   }, [settings]);
 
-  function uploadLogo(file) {
+  async function uploadLogo(file) {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       window.alert('Please upload an image file.');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => setDraft((current) => ({ ...current, logoUrl: reader.result }));
-    reader.readAsDataURL(file);
+    try {
+      const logoUrl = await imageFileToDataUrl(file, 700, 0.9);
+      setDraft((current) => ({ ...current, logoUrl }));
+    } catch (err) {
+      window.alert(err.message);
+    }
   }
 
   return (
