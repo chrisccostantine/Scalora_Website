@@ -188,3 +188,32 @@ curl -X POST http://localhost:8080/api/leads \
 - Put the backend behind HTTPS.
 - Use managed PostgreSQL with backups.
 - Store environment variables in the host or deployment platform secret manager.
+
+## Railway Backend Deploy
+
+This repository is a monorepo, so Railway needs to know that the deploy target is the Spring Boot backend. The root `nixpacks.toml` builds:
+
+```bash
+cd backend && mvn -DskipTests clean package
+```
+
+and starts:
+
+```bash
+java -jar backend/target/scalora-api-1.0.0.jar
+```
+
+Set these Railway variables on the backend service:
+
+```bash
+PGHOST=<Railway PGHOST>
+PGPORT=<Railway PGPORT>
+PGDATABASE=<Railway PGDATABASE>
+PGUSER=<Railway PGUSER>
+PGPASSWORD=<Railway PGPASSWORD>
+JWT_SECRET=<long-secret-at-least-32-characters>
+JWT_EXPIRATION_MINUTES=1440
+CORS_ALLOWED_ORIGINS=<your-frontend-domain>
+ADMIN_EMAIL=admin@scalora.com
+ADMIN_PASSWORD=<strong-admin-password>
+```
