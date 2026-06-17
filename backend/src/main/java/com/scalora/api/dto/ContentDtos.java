@@ -16,5 +16,8 @@ public final class ContentDtos {
   public record TestimonialRequest(@NotBlank String clientName, String company, @NotBlank @Size(max = 2000) String quote, Integer displayOrder, Boolean active) {}
   public record TestimonialResponse(Long id, String clientName, String company, String quote, Integer displayOrder, Boolean active) {}
 
-  public record PublicContentResponse(List<ServiceResponse> services, List<ProjectResponse> projects, List<TestimonialResponse> testimonials) {}
+  public record BrandSettingsRequest(@NotBlank String agencyName, String logoUrl) {}
+  public record BrandSettingsResponse(Long id, String agencyName, String logoUrl) {}
+
+  public record PublicContentResponse(List<ServiceResponse> services, List<ProjectResponse> projects, List<TestimonialResponse> testimonials, BrandSettingsResponse brandSettings) {}
 }

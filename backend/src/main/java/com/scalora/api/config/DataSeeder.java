@@ -6,6 +6,7 @@ import com.scalora.api.entity.Testimonial;
 import com.scalora.api.entity.User;
 import com.scalora.api.repository.ProjectRepository;
 import com.scalora.api.repository.ServiceRepository;
+import com.scalora.api.repository.SiteSettingsRepository;
 import com.scalora.api.repository.TestimonialRepository;
 import com.scalora.api.repository.UserRepository;
 import java.util.List;
@@ -23,6 +24,7 @@ public class DataSeeder {
       ServiceRepository services,
       ProjectRepository projects,
       TestimonialRepository testimonials,
+      SiteSettingsRepository siteSettings,
       PasswordEncoder encoder,
       @Value("${ADMIN_EMAIL:admin@scalora.com}") String adminEmail,
       @Value("${ADMIN_PASSWORD:ChangeMe123!}") String adminPassword
@@ -57,6 +59,12 @@ public class DataSeeder {
       if (testimonials.count() == 0) {
         testimonials.save(testimonial("Maya H.", "E-commerce Founder", "Scalora made the store feel premium and practical. The launch was clean, fast, and commercially focused.", 1));
         testimonials.save(testimonial("Karim A.", "Startup Operator", "They understood the product quickly and turned a messy workflow into a dashboard our team actually uses.", 2));
+      }
+
+      if (siteSettings.count() == 0) {
+        com.scalora.api.entity.SiteSettings settings = new com.scalora.api.entity.SiteSettings();
+        settings.setAgencyName("Scalora");
+        siteSettings.save(settings);
       }
     };
   }

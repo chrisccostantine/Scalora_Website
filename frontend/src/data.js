@@ -1,4 +1,5 @@
 export const fallbackContent = {
+  brandSettings: { agencyName: 'Scalora', logoUrl: '' },
   services: [
     { id: 1, title: 'Shopify E-commerce', description: 'Conversion-focused Shopify stores with product architecture, checkout polish, analytics, and scalable growth foundations.', icon: 'ShoppingBag' },
     { id: 2, title: 'Custom Websites', description: 'Fast, modern company websites with clean UX, SEO structure, and CMS-ready content systems.', icon: 'MonitorSmartphone' },

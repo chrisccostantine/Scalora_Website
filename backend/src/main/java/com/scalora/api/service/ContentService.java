@@ -5,13 +5,17 @@ import com.scalora.api.dto.ContentDtos.ProjectResponse;
 import com.scalora.api.dto.ContentDtos.PublicContentResponse;
 import com.scalora.api.dto.ContentDtos.ServiceRequest;
 import com.scalora.api.dto.ContentDtos.ServiceResponse;
+import com.scalora.api.dto.ContentDtos.BrandSettingsRequest;
+import com.scalora.api.dto.ContentDtos.BrandSettingsResponse;
 import com.scalora.api.dto.ContentDtos.TestimonialRequest;
 import com.scalora.api.dto.ContentDtos.TestimonialResponse;
 import com.scalora.api.entity.Project;
+import com.scalora.api.entity.SiteSettings;
 import com.scalora.api.entity.Testimonial;
 import com.scalora.api.exception.ResourceNotFoundException;
 import com.scalora.api.repository.ProjectRepository;
 import com.scalora.api.repository.ServiceRepository;
+import com.scalora.api.repository.SiteSettingsRepository;
 import com.scalora.api.repository.TestimonialRepository;
 import java.util.List;
 import org.springframework.data.domain.Sort;
@@ -23,11 +27,13 @@ public class ContentService {
   private final ServiceRepository serviceRepository;
   private final ProjectRepository projectRepository;
   private final TestimonialRepository testimonialRepository;
+  private final SiteSettingsRepository siteSettingsRepository;
 
-  public ContentService(ServiceRepository serviceRepository, ProjectRepository projectRepository, TestimonialRepository testimonialRepository) {
+  public ContentService(ServiceRepository serviceRepository, ProjectRepository projectRepository, TestimonialRepository testimonialRepository, SiteSettingsRepository siteSettingsRepository) {
     this.serviceRepository = serviceRepository;
     this.projectRepository = projectRepository;
     this.testimonialRepository = testimonialRepository;
+    this.siteSettingsRepository = siteSettingsRepository;
   }
 
   @Transactional(readOnly = true)
@@ -35,8 +41,22 @@ public class ContentService {
     return new PublicContentResponse(
         serviceRepository.findByActiveTrueOrderByDisplayOrderAsc().stream().map(this::serviceResponse).toList(),
         projectRepository.findByActiveTrueOrderByFeaturedDescCreatedAtDesc().stream().map(this::projectResponse).toList(),
-        testimonialRepository.findByActiveTrueOrderByDisplayOrderAsc().stream().map(this::testimonialResponse).toList()
+        testimonialRepository.findByActiveTrueOrderByDisplayOrderAsc().stream().map(this::testimonialResponse).toList(),
+        brandSettingsResponse(settings())
     );
+  }
+
+  @Transactional(readOnly = true)
+  public BrandSettingsResponse brandSettings() {
+    return brandSettingsResponse(settings());
+  }
+
+  @Transactional
+  public BrandSettingsResponse saveBrandSettings(BrandSettingsRequest request) {
+    SiteSettings settings = settings();
+    settings.setAgencyName(request.agencyName());
+    settings.setLogoUrl(request.logoUrl());
+    return brandSettingsResponse(siteSettingsRepository.save(settings));
   }
 
   @Transactional(readOnly = true)
@@ -113,5 +133,17 @@ public class ContentService {
 
   private TestimonialResponse testimonialResponse(Testimonial testimonial) {
     return new TestimonialResponse(testimonial.getId(), testimonial.getClientName(), testimonial.getCompany(), testimonial.getQuote(), testimonial.getDisplayOrder(), testimonial.isActive());
+  }
+
+  private SiteSettings settings() {
+    return siteSettingsRepository.findAll().stream().findFirst().orElseGet(() -> {
+      SiteSettings siteSettings = new SiteSettings();
+      siteSettings.setAgencyName("Scalora");
+      return siteSettings;
+    });
+  }
+
+  private BrandSettingsResponse brandSettingsResponse(SiteSettings settings) {
+    return new BrandSettingsResponse(settings.getId(), settings.getAgencyName(), settings.getLogoUrl());
   }
 }

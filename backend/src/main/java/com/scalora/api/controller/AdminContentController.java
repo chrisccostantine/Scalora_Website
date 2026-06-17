@@ -4,6 +4,8 @@ import com.scalora.api.dto.ContentDtos.ProjectRequest;
 import com.scalora.api.dto.ContentDtos.ProjectResponse;
 import com.scalora.api.dto.ContentDtos.ServiceRequest;
 import com.scalora.api.dto.ContentDtos.ServiceResponse;
+import com.scalora.api.dto.ContentDtos.BrandSettingsRequest;
+import com.scalora.api.dto.ContentDtos.BrandSettingsResponse;
 import com.scalora.api.dto.ContentDtos.TestimonialRequest;
 import com.scalora.api.dto.ContentDtos.TestimonialResponse;
 import com.scalora.api.service.ContentService;
@@ -70,4 +72,10 @@ public class AdminContentController {
   @DeleteMapping("/testimonials/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void deleteTestimonial(@PathVariable Long id) { contentService.deleteTestimonial(id); }
+
+  @GetMapping("/settings")
+  public BrandSettingsResponse settings() { return contentService.brandSettings(); }
+
+  @PutMapping("/settings")
+  public BrandSettingsResponse updateSettings(@Valid @RequestBody BrandSettingsRequest request) { return contentService.saveBrandSettings(request); }
 }

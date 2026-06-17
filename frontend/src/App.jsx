@@ -28,14 +28,20 @@ const navItems = [
   ['Contact', '#contact']
 ];
 
-function Header({ onAdmin }) {
+function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
   const [open, setOpen] = useState(false);
+  const logo = brandSettings.logoUrl;
+  const agencyName = brandSettings.agencyName || 'Scalora';
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur">
       <div className="section flex h-16 items-center justify-between">
         <a href="#home" className="flex items-center gap-3 font-bold tracking-tight text-ink">
-          <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white">S</span>
-          <span className="text-xl">Scalora</span>
+          {logo ? (
+            <img className="h-10 w-10 rounded-lg object-contain" src={logo} alt={`${agencyName} logo`} />
+          ) : (
+            <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white">S</span>
+          )}
+          <span className="text-xl">{agencyName}</span>
         </a>
         <nav className="hidden items-center gap-7 md:flex">
           {navItems.map(([label, href]) => (
@@ -59,7 +65,10 @@ function Header({ onAdmin }) {
       {open && (
         <div className="fixed inset-0 z-50 bg-white p-5 md:hidden">
           <div className="flex items-center justify-between">
-            <span className="text-xl font-bold">Scalora</span>
+            <span className="flex items-center gap-3 text-xl font-bold">
+              {logo ? <img className="h-10 w-10 rounded-lg object-contain" src={logo} alt={`${agencyName} logo`} /> : null}
+              {agencyName}
+            </span>
             <button className="rounded-lg p-2" onClick={() => setOpen(false)} aria-label="Close menu">
               <X />
             </button>
@@ -314,6 +323,7 @@ function Site({ onAdmin }) {
   const [content, setContent] = useState(fallbackContent);
   useEffect(() => {
     api.publicContent().then((data) => setContent({
+      brandSettings: data.brandSettings || fallbackContent.brandSettings,
       services: data.services?.length ? data.services : fallbackContent.services,
       projects: data.projects?.length ? data.projects : fallbackContent.projects,
       testimonials: data.testimonials?.length ? data.testimonials : fallbackContent.testimonials
@@ -321,7 +331,7 @@ function Site({ onAdmin }) {
   }, []);
   return (
     <>
-      <Header onAdmin={onAdmin} />
+      <Header onAdmin={onAdmin} brandSettings={content.brandSettings} />
       <main>
         <Hero />
         <About />
@@ -340,12 +350,15 @@ function Admin({ onExit }) {
   const [token, setToken] = useState(localStorage.getItem('scalora_token'));
   const [credentials, setCredentials] = useState({ email: 'admin@scalora.com', password: 'ChangeMe123!' });
   const [error, setError] = useState('');
-  const [data, setData] = useState({ leads: [], services: [], projects: [], testimonials: [] });
+  const [notice, setNotice] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [data, setData] = useState({ leads: [], services: [], projects: [], testimonials: [], settings: fallbackContent.brandSettings });
   const [tab, setTab] = useState('leads');
   const [draft, setDraft] = useState({});
 
   const loaders = useMemo(() => ({
     leads: api.leads,
+    settings: api.settings,
     services: api.services,
     projects: api.projects,
     testimonials: api.testimonials
@@ -374,15 +387,47 @@ function Admin({ onExit }) {
 
   async function saveCollection(collection) {
     const save = collection === 'services' ? api.saveService : collection === 'projects' ? api.saveProject : api.saveTestimonial;
-    await save(draft);
-    setDraft({});
-    await loadAll();
+    setError('');
+    setNotice('');
+    setSaving(true);
+    try {
+      await save(draft);
+      setDraft({});
+      await loadAll();
+      setNotice(`${collection.slice(0, -1)} saved successfully.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   async function remove(collection, id) {
     const fn = collection === 'services' ? api.removeService : collection === 'projects' ? api.removeProject : api.removeTestimonial;
-    await fn(id);
-    await loadAll();
+    setError('');
+    setNotice('');
+    try {
+      await fn(id);
+      await loadAll();
+      setNotice(`${collection.slice(0, -1)} deleted.`);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
+  async function saveBrandSettings(settings) {
+    setError('');
+    setNotice('');
+    setSaving(true);
+    try {
+      await api.saveSettings(settings);
+      await loadAll();
+      setNotice('Brand settings saved successfully.');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSaving(false);
+    }
   }
 
   if (!token) {
@@ -412,11 +457,12 @@ function Admin({ onExit }) {
           <button onClick={() => { localStorage.removeItem('scalora_token'); setToken(null); onExit(); }} className="inline-flex items-center gap-2 rounded-lg bg-ink px-5 py-3 font-bold text-white"><LogOut size={18} /> Logout</button>
         </div>
         <div className="mt-8 flex flex-wrap gap-2">
-          {['leads', 'services', 'projects', 'testimonials'].map((item) => (
+          {['leads', 'services', 'projects', 'testimonials', 'brand'].map((item) => (
             <button key={item} onClick={() => { setTab(item); setDraft({}); }} className={`rounded-lg px-4 py-2 font-bold capitalize ${tab === item ? 'bg-teal text-white' : 'bg-white text-ink'}`}>{item}</button>
           ))}
         </div>
         {error && <p className="mt-4 rounded-lg bg-red-50 p-4 font-semibold text-red-700">{error}</p>}
+        {notice && <p className="mt-4 rounded-lg bg-emerald-50 p-4 font-semibold text-emerald-700">{notice}</p>}
         {tab === 'leads' ? (
           <div className="mt-6 overflow-x-auto rounded-lg border border-slate-200 bg-white">
             <table className="w-full min-w-[900px] text-left text-sm">
@@ -431,15 +477,17 @@ function Admin({ onExit }) {
               </tbody>
             </table>
           </div>
+        ) : tab === 'brand' ? (
+          <BrandManager settings={data.settings} saving={saving} save={saveBrandSettings} />
         ) : (
-          <CollectionManager tab={tab} data={data[tab]} draft={draft} setDraft={setDraft} save={() => saveCollection(tab)} remove={(id) => remove(tab, id)} />
+          <CollectionManager tab={tab} data={data[tab]} draft={draft} setDraft={setDraft} saving={saving} save={() => saveCollection(tab)} remove={(id) => remove(tab, id)} />
         )}
       </div>
     </main>
   );
 }
 
-function CollectionManager({ tab, data, draft, setDraft, save, remove }) {
+function CollectionManager({ tab, data, draft, setDraft, saving, save, remove }) {
   const fields = {
     services: ['title', 'description', 'icon', 'displayOrder'],
     projects: ['title', 'category', 'summary', 'imageUrl', 'featured'],
@@ -485,7 +533,9 @@ function CollectionManager({ tab, data, draft, setDraft, save, remove }) {
               <input key={field} className="rounded-lg border border-slate-300 px-4 py-3" placeholder={field} value={draft[field] || ''} onChange={(e) => setDraft({ ...draft, [field]: e.target.value })} />
             )
           ))}
-          <button onClick={save} className="rounded-lg bg-ink px-5 py-3 font-black text-white">Save</button>
+          <button type="button" disabled={saving} onClick={save} className="rounded-lg bg-ink px-5 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-60">
+            {saving ? 'Saving...' : 'Save'}
+          </button>
         </div>
       </div>
       <div className="grid gap-4">
@@ -499,6 +549,70 @@ function CollectionManager({ tab, data, draft, setDraft, save, remove }) {
             </div>
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+function BrandManager({ settings, saving, save }) {
+  const [draft, setDraft] = useState(settings || fallbackContent.brandSettings);
+
+  useEffect(() => {
+    setDraft(settings || fallbackContent.brandSettings);
+  }, [settings]);
+
+  function uploadLogo(file) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      window.alert('Please upload an image file.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => setDraft((current) => ({ ...current, logoUrl: reader.result }));
+    reader.readAsDataURL(file);
+  }
+
+  return (
+    <div className="mt-6 grid gap-6 lg:grid-cols-[360px_1fr]">
+      <div className="rounded-lg border border-slate-200 bg-white p-5">
+        <h2 className="text-xl font-black">Brand Settings</h2>
+        <div className="mt-4 grid gap-3">
+          <input
+            className="rounded-lg border border-slate-300 px-4 py-3"
+            placeholder="Agency name"
+            value={draft.agencyName || ''}
+            onChange={(e) => setDraft({ ...draft, agencyName: e.target.value })}
+          />
+          {draft.logoUrl && (
+            <div className="grid place-items-center rounded-lg border border-slate-200 bg-slate-50 p-5">
+              <img className="max-h-28 max-w-full object-contain" src={draft.logoUrl} alt="Agency logo preview" />
+            </div>
+          )}
+          <label className="focus-ring cursor-pointer rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-5 text-center font-bold text-ink hover:border-teal hover:bg-mist">
+            Upload agency logo
+            <input className="sr-only" type="file" accept="image/*" onChange={(e) => uploadLogo(e.target.files?.[0])} />
+          </label>
+          {draft.logoUrl && (
+            <button type="button" onClick={() => setDraft({ ...draft, logoUrl: '' })} className="rounded-lg border border-slate-300 px-4 py-2 font-bold text-ink">
+              Remove logo
+            </button>
+          )}
+          <button type="button" disabled={saving} onClick={() => save(draft)} className="rounded-lg bg-ink px-5 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-60">
+            {saving ? 'Saving...' : 'Save Brand'}
+          </button>
+        </div>
+      </div>
+      <div className="rounded-lg border border-slate-200 bg-white p-6">
+        <p className="text-sm font-bold uppercase tracking-[0.18em] text-teal">Frontend Preview</p>
+        <div className="mt-5 flex items-center gap-3">
+          {draft.logoUrl ? (
+            <img className="h-12 w-12 rounded-lg object-contain" src={draft.logoUrl} alt="Agency logo preview" />
+          ) : (
+            <span className="grid h-12 w-12 place-items-center rounded-lg bg-ink text-lg font-black text-white">S</span>
+          )}
+          <span className="text-2xl font-black text-ink">{draft.agencyName || 'Scalora'}</span>
+        </div>
       </div>
     </div>
   );
