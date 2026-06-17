@@ -388,7 +388,7 @@ function Site({ onAdmin }) {
 
 function Admin({ onExit }) {
   const [token, setToken] = useState(localStorage.getItem('scalora_token'));
-  const [credentials, setCredentials] = useState({ email: 'admin@scalora.com', password: 'ChangeMe123!' });
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [saving, setSaving] = useState(false);
