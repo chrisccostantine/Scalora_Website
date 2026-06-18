@@ -241,7 +241,7 @@ function WhyChoose() {
   );
 }
 
-function Projects({ projects }) {
+function Projects({ projects, loading }) {
   const fallbackImage = 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80';
   const [showAllMobileProjects, setShowAllMobileProjects] = useState(false);
   const mobileProjects = showAllMobileProjects ? projects : projects.slice(0, 3);
@@ -261,6 +261,21 @@ function Projects({ projects }) {
       <div className="section">
         <p className="font-bold uppercase tracking-[0.18em] text-coral">Portfolio</p>
         <h2 className="mt-4 max-w-3xl text-4xl font-black text-ink sm:text-5xl">Project formats Scalora can deliver for real business and academic needs.</h2>
+        {loading && projects.length === 0 ? (
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {[1, 2, 3].map((item) => (
+              <div key={item} className="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+                <div className="h-56 animate-pulse bg-slate-100" />
+                <div className="space-y-4 p-6">
+                  <div className="h-4 w-24 animate-pulse rounded bg-slate-100" />
+                  <div className="h-7 w-3/4 animate-pulse rounded bg-slate-100" />
+                  <div className="h-4 w-full animate-pulse rounded bg-slate-100" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <>
         <div className="mt-10 md:hidden">
           <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-4">
             {mobileProjects.map((project) => (
@@ -278,6 +293,8 @@ function Projects({ projects }) {
         <div className="mt-10 hidden gap-6 md:grid lg:grid-cols-3">
           {projects.map(projectCard)}
         </div>
+          </>
+        )}
       </div>
     </section>
   );
@@ -360,14 +377,15 @@ function Footer() {
 }
 
 function Site({ onAdmin }) {
-  const [content, setContent] = useState(fallbackContent);
+  const [content, setContent] = useState({ ...fallbackContent, projects: [] });
+  const [contentLoading, setContentLoading] = useState(true);
   useEffect(() => {
     api.publicContent().then((data) => setContent({
       brandSettings: data.brandSettings || fallbackContent.brandSettings,
       services: data.services?.length ? data.services : fallbackContent.services,
       projects: data.projects?.length ? data.projects : fallbackContent.projects,
       testimonials: data.testimonials?.length ? data.testimonials : fallbackContent.testimonials
-    })).catch(() => setContent(fallbackContent));
+    })).catch(() => setContent(fallbackContent)).finally(() => setContentLoading(false));
   }, []);
   return (
     <>
@@ -377,7 +395,7 @@ function Site({ onAdmin }) {
         <About />
         <Services services={content.services} />
         <WhyChoose />
-        <Projects projects={content.projects} />
+        <Projects projects={content.projects} loading={contentLoading} />
         <Testimonials testimonials={content.testimonials} />
         <Contact />
       </main>
