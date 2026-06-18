@@ -57,13 +57,15 @@ function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur">
       <div className="section flex h-16 items-center justify-between">
-        <a href="#home" className="flex items-center gap-3 font-bold tracking-tight text-ink">
+        <a href="#home" className="flex min-w-0 items-center gap-3 font-bold tracking-tight text-ink">
           {logo ? (
-            <img className="h-10 w-10 rounded-lg object-contain" src={logo} alt={`${agencyName} logo`} />
+            <span className="flex h-12 w-28 items-center justify-start">
+              <img className="max-h-12 max-w-28 object-contain" src={logo} alt={`${agencyName} logo`} />
+            </span>
           ) : (
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white">S</span>
           )}
-          <span className="text-xl">{agencyName}</span>
+          <span className="text-xl font-black">{agencyName}</span>
         </a>
         <nav className="hidden items-center gap-7 md:flex">
           {navItems.map(([label, href]) => (
@@ -88,7 +90,11 @@ function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
         <div className="fixed inset-0 z-[100] min-h-dvh bg-white p-5 text-ink shadow-glow md:hidden">
           <div className="flex items-center justify-between border-b border-slate-200 pb-4">
             <span className="flex items-center gap-3 text-xl font-bold">
-              {logo ? <img className="h-10 w-10 rounded-lg object-contain" src={logo} alt={`${agencyName} logo`} /> : null}
+              {logo ? (
+                <span className="flex h-12 w-28 items-center justify-start">
+                  <img className="max-h-12 max-w-28 object-contain" src={logo} alt={`${agencyName} logo`} />
+                </span>
+              ) : null}
               {agencyName}
             </span>
             <button className="rounded-lg p-2" onClick={() => setOpen(false)} aria-label="Close menu">
