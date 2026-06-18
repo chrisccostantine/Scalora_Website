@@ -53,19 +53,20 @@ function imageFileToDataUrl(file, maxSize = 1400, quality = 0.82) {
 function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
   const [open, setOpen] = useState(false);
   const logo = brandSettings.logoUrl;
-  const agencyName = brandSettings.agencyName || 'Scalora';
+  const agencyName = brandSettings.agencyName?.trim() || '';
+  const logoAlt = `${agencyName || 'Scalora'} logo`;
   return (
     <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/90 backdrop-blur">
       <div className="section flex h-16 items-center justify-between">
         <a href="#home" className="flex min-w-0 items-center gap-3 font-bold tracking-tight text-ink">
           {logo ? (
             <span className="flex h-12 w-28 items-center justify-start">
-              <img className="max-h-12 max-w-28 object-contain" src={logo} alt={`${agencyName} logo`} />
+              <img className="max-h-12 max-w-28 object-contain" src={logo} alt={logoAlt} />
             </span>
           ) : (
             <span className="grid h-10 w-10 place-items-center rounded-lg bg-ink text-white">S</span>
           )}
-          <span className="text-xl font-black">{agencyName}</span>
+          {agencyName && <span className="text-xl font-black">{agencyName}</span>}
         </a>
         <nav className="hidden items-center gap-7 md:flex">
           {navItems.map(([label, href]) => (
@@ -92,7 +93,7 @@ function Header({ onAdmin, brandSettings = fallbackContent.brandSettings }) {
             <span className="flex items-center gap-3 text-xl font-bold">
               {logo ? (
                 <span className="flex h-12 w-28 items-center justify-start">
-                  <img className="max-h-12 max-w-28 object-contain" src={logo} alt={`${agencyName} logo`} />
+                  <img className="max-h-12 max-w-28 object-contain" src={logo} alt={logoAlt} />
                 </span>
               ) : null}
               {agencyName}
@@ -681,7 +682,7 @@ function BrandManager({ settings, saving, save }) {
           ) : (
             <span className="grid h-12 w-12 place-items-center rounded-lg bg-ink text-lg font-black text-white">S</span>
           )}
-          <span className="text-2xl font-black text-ink">{draft.agencyName || 'Scalora'}</span>
+          {draft.agencyName?.trim() && <span className="text-2xl font-black text-ink">{draft.agencyName}</span>}
         </div>
       </div>
     </div>
