@@ -650,7 +650,7 @@ function BrandManager({ settings, saving, save }) {
         <div className="mt-4 grid gap-3">
           <input
             className="rounded-lg border border-slate-300 px-4 py-3"
-            placeholder="Agency name"
+            placeholder="Agency name optional"
             value={draft.agencyName || ''}
             onChange={(e) => setDraft({ ...draft, agencyName: e.target.value })}
           />

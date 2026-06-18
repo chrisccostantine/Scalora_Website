@@ -54,7 +54,7 @@ public class ContentService {
   @Transactional
   public BrandSettingsResponse saveBrandSettings(BrandSettingsRequest request) {
     SiteSettings settings = settings();
-    settings.setAgencyName(request.agencyName());
+    settings.setAgencyName(request.agencyName() == null || request.agencyName().isBlank() ? "Scalora" : request.agencyName());
     settings.setLogoUrl(request.logoUrl());
     return brandSettingsResponse(siteSettingsRepository.save(settings));
   }
