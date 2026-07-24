@@ -27,6 +27,8 @@ public class LeadService {
     lead.setPhone(request.phone());
     lead.setCompany(request.company());
     lead.setProjectType(request.projectType());
+    lead.setBudget(request.budget());
+    lead.setTimeline(request.timeline());
     lead.setMessage(request.message());
     return toResponse(repository.save(lead));
   }
@@ -44,6 +46,6 @@ public class LeadService {
   }
 
   private LeadResponse toResponse(Lead lead) {
-    return new LeadResponse(lead.getId(), lead.getName(), lead.getEmail(), lead.getPhone(), lead.getCompany(), lead.getProjectType(), lead.getMessage(), lead.getStatus(), lead.getCreatedAt());
+    return new LeadResponse(lead.getId(), lead.getName(), lead.getEmail(), lead.getPhone(), lead.getCompany(), lead.getProjectType(), lead.getBudget(), lead.getTimeline(), lead.getMessage(), lead.getStatus(), lead.getCreatedAt());
   }
 }

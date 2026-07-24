@@ -5,9 +5,9 @@ export const fallbackContent = {
     { id: 2, title: 'Custom Websites', description: 'Fast, modern company websites with clean UX, SEO structure, and CMS-ready content systems.', icon: 'MonitorSmartphone' },
     { id: 3, title: 'Web Applications', description: 'Secure dashboards, portals, booking tools, internal systems, and SaaS-style applications.', icon: 'Code2' },
     { id: 4, title: 'Mobile Applications', description: 'Customer-facing and operational mobile app experiences designed around real usage flows.', icon: 'Smartphone' },
-    { id: 5, title: 'Social Media & Design', description: 'Content calendars, branded graphic posts, creative direction, and consistent visual systems.', icon: 'Palette' },
+    { id: 5, title: 'Social Media & Content', description: 'Content calendars, reels, branded graphic posts, and consistent visual systems across every channel.', icon: 'Palette' },
     { id: 6, title: 'Paid Ads Management', description: 'Meta Ads, TikTok Ads, and Google Ads campaigns with tracking, testing, reporting, and optimization.', icon: 'Megaphone' },
-    { id: 7, title: 'Academic Projects', description: 'University software projects, prototypes, documentation, and polished demos for student teams.', icon: 'GraduationCap' }
+    { id: 7, title: 'Academic & Prototype Projects', description: 'University software projects, prototypes, documentation, and polished demos for student teams.', icon: 'GraduationCap' }
   ],
   projects: [
     { id: 1, title: 'Luxury Shopify Store', category: 'Shopify', summary: 'Premium storefront with collections, bundles, analytics, and a refined mobile checkout path.', imageUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80', featured: true },

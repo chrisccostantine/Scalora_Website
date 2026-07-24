@@ -16,9 +16,11 @@ public final class LeadDtos {
       @Size(max = 60) String phone,
       @Size(max = 160) String company,
       @NotBlank @Size(max = 120) String projectType,
+      @Size(max = 120) String budget,
+      @Size(max = 120) String timeline,
       @NotBlank @Size(max = 3000) String message
   ) {}
 
-  public record LeadResponse(Long id, String name, String email, String phone, String company, String projectType, String message, LeadStatus status, Instant createdAt) {}
+  public record LeadResponse(Long id, String name, String email, String phone, String company, String projectType, String budget, String timeline, String message, LeadStatus status, Instant createdAt) {}
   public record LeadStatusRequest(@NotNull LeadStatus status) {}
 }

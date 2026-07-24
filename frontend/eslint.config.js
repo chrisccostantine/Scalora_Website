@@ -9,6 +9,9 @@ export default [
     languageOptions: {
       ecmaVersion: 2022,
       sourceType: 'module',
+      parserOptions: {
+        ecmaFeatures: { jsx: true }
+      },
       globals: {
         window: 'readonly',
         document: 'readonly',
@@ -17,7 +20,12 @@ export default [
         localStorage: 'readonly',
         location: 'readonly',
         fetch: 'readonly',
-        import: 'readonly'
+        import: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        IntersectionObserver: 'readonly'
       }
     },
     plugins: {

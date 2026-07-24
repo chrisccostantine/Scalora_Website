@@ -17,6 +17,8 @@ public class Lead extends BaseEntity {
   private String company;
   @Column(nullable = false)
   private String projectType;
+  private String budget;
+  private String timeline;
   @Column(nullable = false, length = 3000)
   private String message;
   @Enumerated(EnumType.STRING)
@@ -33,6 +35,10 @@ public class Lead extends BaseEntity {
   public void setCompany(String company) { this.company = company; }
   public String getProjectType() { return projectType; }
   public void setProjectType(String projectType) { this.projectType = projectType; }
+  public String getBudget() { return budget; }
+  public void setBudget(String budget) { this.budget = budget; }
+  public String getTimeline() { return timeline; }
+  public void setTimeline(String timeline) { this.timeline = timeline; }
   public String getMessage() { return message; }
   public void setMessage(String message) { this.message = message; }
   public LeadStatus getStatus() { return status; }

@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  color: #101828;
-  background: #f8fafc;
+  color: #e7e9ee;
+  background: #0b0d12;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -14,9 +14,24 @@ html {
   scroll-behavior: smooth;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
 }
 
 button,
@@ -31,5 +46,17 @@ select {
 }
 
 .focus-ring {
-  @apply focus:outline-none focus:ring-4 focus:ring-teal/20;
+  @apply focus:outline-none focus:ring-4 focus:ring-brand-violet/30;
+}
+
+.text-gradient {
+  @apply bg-brand-gradient bg-clip-text text-transparent;
+}
+
+.glass-panel {
+  @apply border border-white/10 bg-white/[0.04] backdrop-blur-xl;
+}
+
+.perspective-hero {
+  perspective: 1800px;
 }
