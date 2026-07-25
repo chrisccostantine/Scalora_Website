@@ -19,7 +19,7 @@ export default function HeroPanel({
 }) {
   return (
     <motion.div
-      className={`absolute ${hideOnMobile ? 'hidden md:block' : ''} ${className}`}
+      className={`absolute ${hideOnMobile ? 'hidden lg:block' : ''} ${className}`}
       style={{
         ...style,
         transformStyle: 'preserve-3d',

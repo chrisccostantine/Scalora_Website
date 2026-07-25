@@ -2,12 +2,13 @@ import { Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles } from 'lucide-react';
 import { Badge, Button } from '../ui';
+import MobileHeroStack from './MobileHeroStack';
 
 const HeroScene = lazy(() => import('./HeroScene'));
 
 function HeroSceneFallback() {
   return (
-    <div className="mx-auto flex aspect-square w-full max-w-[560px] items-center justify-center">
+    <div className="mx-auto hidden aspect-square w-full max-w-[560px] items-center justify-center md:flex">
       <div className="h-24 w-24 animate-pulse rounded-full border border-white/10 bg-charcoal-800/80" />
     </div>
   );
@@ -41,9 +42,12 @@ export default function Hero() {
         </div>
 
         <div aria-hidden="true" className="min-w-0">
-          <Suspense fallback={<HeroSceneFallback />}>
-            <HeroScene />
-          </Suspense>
+          <MobileHeroStack />
+          <div className="hidden md:block">
+            <Suspense fallback={<HeroSceneFallback />}>
+              <HeroScene />
+            </Suspense>
+          </div>
         </div>
       </div>
     </section>
