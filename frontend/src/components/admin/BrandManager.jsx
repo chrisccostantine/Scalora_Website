@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { fallbackContent } from '../../data';
 
-function imageFileToDataUrl(file, maxSize = 700, quality = 0.9) {
+function imageFileToDataUrl(file, maxSize = 700) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error('Could not read image file.'));
@@ -15,7 +15,9 @@ function imageFileToDataUrl(file, maxSize = 700, quality = 0.9) {
         canvas.height = Math.max(1, Math.round(image.height * scale));
         const context = canvas.getContext('2d');
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
-        resolve(canvas.toDataURL('image/jpeg', quality));
+        // PNG, not JPEG: logos need a transparent background preserved. JPEG has
+        // no alpha channel, so transparent logos silently got a white background baked in.
+        resolve(canvas.toDataURL('image/png'));
       };
       image.src = reader.result;
     };
