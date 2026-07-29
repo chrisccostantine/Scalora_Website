@@ -45,7 +45,70 @@
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!--
+        Static crawlable fallback. React replaces this markup when the app starts,
+        but reviewers and search crawlers can read it without running JavaScript.
+      -->
+      <main
+        style="font-family:Inter,system-ui,sans-serif;background:#0b0d12;color:#fff;padding:64px 20px;min-height:100vh;"
+      >
+        <section style="max-width:1120px;margin:0 auto;">
+          <p style="margin:0 0 12px;color:#aeb2bf;font-size:0.8rem;font-weight:700;text-transform:uppercase;">
+            Scalora Growth &amp; Technology Agency
+          </p>
+          <h1 style="max-width:760px;margin:0;font-size:2.5rem;line-height:1.15;">
+            Creative, advertising and technology built to scale your business.
+          </h1>
+          <p style="max-width:700px;margin:20px 0 0;color:#c7c9d1;line-height:1.7;">
+            Scalora delivers performance advertising, social media management, Shopify and custom websites, web
+            applications, and mobile applications for businesses in Lebanon, the Gulf, and internationally.
+          </p>
+        </section>
+
+        <section style="max-width:1120px;margin:64px auto 0;" aria-labelledby="static-projects-title">
+          <p style="margin:0 0 10px;color:#aeb2bf;font-size:0.8rem;font-weight:700;text-transform:uppercase;">
+            Portfolio
+          </p>
+          <h2 id="static-projects-title" style="margin:0;font-size:1.8rem;">Selected projects</h2>
+          <div style="display:grid;gap:16px;margin-top:24px;">
+            <article style="border:1px solid #30333c;border-radius:12px;padding:20px;">
+              <h3 style="margin:0 0 8px;">Luxury Shopify Store</h3>
+              <p style="margin:0;color:#c7c9d1;line-height:1.6;">
+                Premium storefront with collections, bundles, analytics, and a refined mobile checkout path.
+              </p>
+            </article>
+            <article style="border:1px solid #30333c;border-radius:12px;padding:20px;">
+              <h3 style="margin:0 0 8px;">Founder Portfolio Platform</h3>
+              <p style="margin:0;color:#c7c9d1;line-height:1.6;">
+                Personal brand website with case studies, press, lead capture, and a fast editorial structure.
+              </p>
+            </article>
+            <article style="border:1px solid #30333c;border-radius:12px;padding:20px;">
+              <h3 style="margin:0 0 8px;">Student Project Portal</h3>
+              <p style="margin:0;color:#c7c9d1;line-height:1.6;">
+                Academic project submission portal with roles, status tracking, and admin review tools.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section
+          style="max-width:1120px;margin:64px auto 0;border:1px solid #434752;border-radius:12px;padding:24px;"
+          aria-labelledby="static-client-relationship-title"
+        >
+          <p style="margin:0 0 10px;color:#aeb2bf;font-size:0.8rem;font-weight:700;text-transform:uppercase;">
+            Client relationship disclosure
+          </p>
+          <h2 id="static-client-relationship-title" style="margin:0 0 10px;font-size:1.5rem;">
+            V Shape Gym Maghdoucheh
+          </h2>
+          <p style="margin:0;color:#e4e5e9;line-height:1.6;">
+            Scalora manages WhatsApp Business communications on behalf of V Shape Gym Maghdoucheh.
+          </p>
+        </section>
+      </main>
+    </div>
     <noscript>
       <div style="font-family:Inter,system-ui,sans-serif;background:#0b0d12;color:#fff;padding:48px 20px;min-height:100vh;">
         <h1 style="font-size:2rem;font-weight:800;max-width:640px;margin:0 auto 16px;">

@@ -35,11 +35,22 @@ export default function HomePage() {
       <PackagesSection />
       <ReelsShowcase />
       <CTASection />
-      <section className="border-t border-white/10 bg-charcoal-950 py-5 text-white">
+      <section
+        className="border-t border-white/10 bg-charcoal-950 py-10 text-white"
+        aria-labelledby="client-relationship-title"
+      >
         <div className="section">
-          <p className="text-center text-xs leading-5 text-white/50">
-            Scalora manages WhatsApp Business communications on behalf of V Shape Gym Maghdoucheh.
-          </p>
+          <div className="mx-auto max-w-3xl rounded-2xl border border-white/15 bg-white/[0.04] px-6 py-6 text-center sm:px-8">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/60">
+              Client relationship disclosure
+            </p>
+            <h2 id="client-relationship-title" className="mt-3 font-display text-xl font-bold text-white sm:text-2xl">
+              V Shape Gym Maghdoucheh
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-white/80">
+              Scalora manages WhatsApp Business communications on behalf of V Shape Gym Maghdoucheh.
+            </p>
+          </div>
         </div>
       </section>
     </>
