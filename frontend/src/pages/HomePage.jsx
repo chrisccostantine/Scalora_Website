@@ -35,6 +35,13 @@ export default function HomePage() {
       <PackagesSection />
       <ReelsShowcase />
       <CTASection />
+      <section className="border-t border-white/10 bg-charcoal-950 py-5 text-white">
+        <div className="section">
+          <p className="text-center text-xs leading-5 text-white/50">
+            Scalora manages WhatsApp Business communications on behalf of V Shape Gym Maghdoucheh.
+          </p>
+        </div>
+      </section>
     </>
   );
 }
