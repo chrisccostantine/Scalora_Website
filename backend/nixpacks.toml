@@ -5,4 +5,4 @@ nixPkgs = ["jdk17", "maven"]
 cmds = ["mvn -DskipTests clean package"]
 
 [start]
-cmd = "java -jar target/scalora-api-1.0.0.jar"
+cmd = "java -Xmx256m -XX:MaxMetaspaceSize=128m -XX:+UseSerialGC -XX:TieredStopAtLevel=1 -jar target/scalora-api-1.0.0.jar"
